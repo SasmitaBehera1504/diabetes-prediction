@@ -61,6 +61,17 @@ st.markdown(
     "</h4>",
     unsafe_allow_html=True
 )
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-image: url('https://images.unsplash.com/photo-1505751172876-fa1923c5c528');
+        background-size: cover;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 st.write("")
 
@@ -176,29 +187,85 @@ if st.button('Predict Diabetes'):
         yn(Obesity)
     ]])
 
+    # model prediction
     prediction = loaded_model.predict(input_data)
+
+    # probability prediction
+    probability = loaded_model.predict_proba(input_data)
+
+    diabetic_probability = probability[0][1] * 100
+
+    # risk level
+    if diabetic_probability < 30:
+        risk = "Low Risk"
+        risk_color = "#BBF7D0"
+        text_color = "#166534"
+
+    elif diabetic_probability < 70:
+        risk = "Moderate Risk"
+        risk_color = "#FDE68A"
+        text_color = "#92400E"
+
+    else:
+        risk = "High Risk"
+        risk_color = "#FECACA"
+        text_color = "#991B1B"
 
     st.write("")
 
+    # positive result
     if prediction[0] == 'Positive':
 
         st.markdown(
-            """
-            <div class='result-box'
-            style='background-color:#FECACA;color:#991B1B;'>
+            f"""
+            <div style='
+            background-color:{risk_color};
+            padding:25px;
+            border-radius:15px;
+            text-align:center;
+            '>
+
+            <h2 style='color:{text_color};'>
             ⚠️ Diabetic Positive
+            </h2>
+
+            <h3 style='color:{text_color};'>
+            Risk Level: {risk}
+            </h3>
+
+            <h3 style='color:{text_color};'>
+            Probability: {diabetic_probability:.2f}%
+            </h3>
+
             </div>
             """,
             unsafe_allow_html=True
         )
 
+    # negative result
     else:
 
         st.markdown(
-            """
-            <div class='result-box'
-            style='background-color:#BBF7D0;color:#166534;'>
+            f"""
+            <div style='
+            background-color:#BBF7D0;
+            padding:25px;
+            border-radius:15px;
+            text-align:center;
+            '>
+
+            <h2 style='color:#166534;'>
             ✅ Not Diabetic
+            </h2>
+
+            <h3 style='color:#166534;'>
+            Risk Level: {risk}
+            </h3>
+
+            <h3 style='color:#166534;'>
+            Probability: {diabetic_probability:.2f}%
+            </h3>
+
             </div>
             """,
             unsafe_allow_html=True
