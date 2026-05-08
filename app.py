@@ -5,7 +5,7 @@ import numpy as np
 # ---------------- PAGE SETTINGS ----------------
 
 st.set_page_config(
-    page_title="Diabetes Prediction",
+    page_title="Diabetes Prediction System",
     page_icon="🩺",
     layout="wide"
 )
@@ -15,16 +15,16 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Main background */
+/* Main Background */
 .stApp {
     background: linear-gradient(
         to right,
-        #eef5ff,
+        #eef4ff,
         #f8fbff
     );
 }
 
-/* Title */
+/* Main Title */
 .main-title {
     text-align: center;
     font-size: 60px;
@@ -33,6 +33,7 @@ st.markdown("""
     margin-bottom: 0px;
 }
 
+/* Subtitle */
 .sub-title {
     text-align: center;
     font-size: 25px;
@@ -41,7 +42,7 @@ st.markdown("""
     margin-bottom: 40px;
 }
 
-/* Card container */
+/* Card */
 .card {
     background-color: white;
     padding: 35px;
@@ -49,7 +50,7 @@ st.markdown("""
     box-shadow: 0px 4px 20px rgba(0,0,0,0.08);
 }
 
-/* Section title */
+/* Section Heading */
 .section-title {
     font-size: 35px;
     font-weight: bold;
@@ -57,13 +58,13 @@ st.markdown("""
     margin-bottom: 20px;
 }
 
-/* Predict button */
+/* Button */
 .stButton > button {
     width: 100%;
     height: 60px;
     border-radius: 12px;
     border: none;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     color: white;
     background: linear-gradient(
@@ -77,10 +78,10 @@ st.markdown("""
     color: white;
 }
 
-/* Result box */
+/* Result Box */
 .result-box {
-    padding: 25px;
-    border-radius: 15px;
+    padding: 30px;
+    border-radius: 18px;
     text-align: center;
     font-size: 28px;
     font-weight: bold;
@@ -126,10 +127,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ---------------- MAIN CARD ----------------
+# ---------------- CARD START ----------------
 
-st.markdown("<div class='card'>",
-            unsafe_allow_html=True)
+st.markdown(
+    "<div class='card'>",
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
@@ -157,8 +160,7 @@ with col2:
         ['Male', 'Female']
     )
 
-# rows of inputs
-
+# Row 1
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -179,6 +181,7 @@ with c3:
         ['Yes', 'No']
     )
 
+# Row 2
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -199,6 +202,7 @@ with c3:
         ['Yes', 'No']
     )
 
+# Row 3
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -219,6 +223,7 @@ with c3:
         ['Yes', 'No']
     )
 
+# Row 4
 c1, c2, c3 = st.columns(3)
 
 with c1:
@@ -239,6 +244,7 @@ with c3:
         ['Yes', 'No']
     )
 
+# Row 5
 c1, c2 = st.columns(2)
 
 with c1:
@@ -255,10 +261,10 @@ with c2:
 
 # ---------------- ENCODING ----------------
 
-Gender = 0 if Gender == 'Male' else 1
+Gender = 1 if Gender == 'Male' else 0
 
-def yn(x):
-    return 0 if x == 'Yes' else 1
+def yn(value):
+    return 1 if value == 'Yes' else 0
 
 # ---------------- PREDICTION ----------------
 
@@ -285,10 +291,10 @@ if st.button('⚡ Predict Diabetes'):
         yn(Obesity)
     ]])
 
-    prediction = loaded_model.predict(
-        input_data
-    )
+    # prediction
+    prediction = loaded_model.predict(input_data)
 
+    # probability
     probability = loaded_model.predict_proba(
         input_data
     )
@@ -307,8 +313,9 @@ if st.button('⚡ Predict Diabetes'):
     else:
         risk = "High Risk"
 
-    # positive
-    if prediction[0] == 'Positive':
+    # ---------------- POSITIVE ----------------
+
+    if prediction[0] == 1:
 
         st.markdown(
             f"""
@@ -320,7 +327,8 @@ if st.button('⚡ Predict Diabetes'):
 
             ⚠️ Diabetic Positive<br><br>
 
-            Risk Level: {risk}<br><br>
+            Risk Level:
+            {risk}<br><br>
 
             Probability:
             {diabetic_probability:.2f}%
@@ -330,7 +338,8 @@ if st.button('⚡ Predict Diabetes'):
             unsafe_allow_html=True
         )
 
-    # negative
+    # ---------------- NEGATIVE ----------------
+
     else:
 
         st.markdown(
@@ -343,7 +352,8 @@ if st.button('⚡ Predict Diabetes'):
 
             ✅ Not Diabetic<br><br>
 
-            Risk Level: {risk}<br><br>
+            Risk Level:
+            {risk}<br><br>
 
             Probability:
             {diabetic_probability:.2f}%
@@ -360,12 +370,15 @@ st.markdown(
     <div class='disclaimer'>
     ⚠️ Disclaimer:
     This prediction is based on machine learning
-    and should not replace professional
-    medical advice.
+    and should not replace professional medical advice.
     </div>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown("</div>",
-            unsafe_allow_html=True)
+# ---------------- CARD END ----------------
+
+st.markdown(
+    "</div>",
+    unsafe_allow_html=True
+)
