@@ -2,171 +2,269 @@ import streamlit as st
 import pickle
 import numpy as np
 
-# page settings
+# ---------------- PAGE SETTINGS ----------------
+
 st.set_page_config(
     page_title="Diabetes Prediction",
     page_icon="🩺",
-    layout="centered"
+    layout="wide"
 )
 
-# custom css
+# ---------------- CUSTOM CSS ----------------
+
 st.markdown("""
 <style>
 
-.main {
-    background-color: #f5f7fa;
+/* Main background */
+.stApp {
+    background: linear-gradient(
+        to right,
+        #eef5ff,
+        #f8fbff
+    );
 }
 
-h1 {
+/* Title */
+.main-title {
     text-align: center;
-    color: #0F172A;
-}
-
-.stButton>button {
-    width: 100%;
-    background-color: #2563EB;
-    color: white;
-    border-radius: 10px;
-    height: 3em;
-    font-size: 18px;
+    font-size: 60px;
     font-weight: bold;
-    border: none;
+    color: #0f172a;
+    margin-bottom: 0px;
 }
 
-.stButton>button:hover {
-    background-color: #1D4ED8;
-    color: white;
-}
-
-.result-box {
-    padding: 20px;
-    border-radius: 12px;
+.sub-title {
     text-align: center;
+    font-size: 25px;
+    color: #64748b;
+    margin-top: 0px;
+    margin-bottom: 40px;
+}
+
+/* Card container */
+.card {
+    background-color: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Section title */
+.section-title {
+    font-size: 35px;
+    font-weight: bold;
+    color: #0f172a;
+    margin-bottom: 20px;
+}
+
+/* Predict button */
+.stButton > button {
+    width: 100%;
+    height: 60px;
+    border-radius: 12px;
+    border: none;
     font-size: 24px;
     font-weight: bold;
+    color: white;
+    background: linear-gradient(
+        to right,
+        #2563eb,
+        #7c3aed
+    );
+}
+
+.stButton > button:hover {
+    color: white;
+}
+
+/* Result box */
+.result-box {
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+/* Disclaimer */
+.disclaimer {
+    background-color: #eff6ff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 25px;
+    color: #1e3a8a;
+    font-size: 17px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# load model
-loaded_model = pickle.load(open('diabetes_model.sav', 'rb'))
+# ---------------- LOAD MODEL ----------------
 
-# title
-st.title("🩺 Diabetes Prediction System")
-
-st.markdown(
-    "<h4 style='text-align:center;color:gray;'>"
-    "Machine Learning Based Health Prediction"
-    "</h4>",
-    unsafe_allow_html=True
+loaded_model = pickle.load(
+    open('diabetes_model.sav', 'rb')
 )
+
+# ---------------- TITLE ----------------
+
 st.markdown(
     """
-    <style>
-    .stApp {
-        background-image: url('https://images.unsplash.com/photo-1505751172876-fa1923c5c528');
-        background-size: cover;
-    }
-    </style>
+    <div class='main-title'>
+    🩺 Diabetes Prediction System
+    </div>
     """,
     unsafe_allow_html=True
 )
 
-st.write("")
-
-# patient details
-st.subheader("Patient Details")
-
-Age = st.number_input(
-    'Age',
-    min_value=1,
-    max_value=120
+st.markdown(
+    """
+    <div class='sub-title'>
+    Machine Learning Based Health Prediction
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
-Gender = st.selectbox(
-    'Gender',
-    ['Male', 'Female']
+# ---------------- MAIN CARD ----------------
+
+st.markdown("<div class='card'>",
+            unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div class='section-title'>
+    👤 Patient Details
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
-Polyuria = st.selectbox(
-    'Polyuria',
-    ['Yes', 'No']
-)
+# ---------------- INPUTS ----------------
 
-Polydipsia = st.selectbox(
-    'Polydipsia',
-    ['Yes', 'No']
-)
+col1, col2 = st.columns(2)
 
-SuddenWeightLoss = st.selectbox(
-    'Sudden Weight Loss',
-    ['Yes', 'No']
-)
+with col1:
+    Age = st.number_input(
+        'Age',
+        min_value=1,
+        max_value=120
+    )
 
-Weakness = st.selectbox(
-    'Weakness',
-    ['Yes', 'No']
-)
+with col2:
+    Gender = st.selectbox(
+        'Gender',
+        ['Male', 'Female']
+    )
 
-Polyphagia = st.selectbox(
-    'Polyphagia',
-    ['Yes', 'No']
-)
+# rows of inputs
 
-GenitalThrush = st.selectbox(
-    'Genital Thrush',
-    ['Yes', 'No']
-)
+c1, c2, c3 = st.columns(3)
 
-VisualBlurring = st.selectbox(
-    'Visual Blurring',
-    ['Yes', 'No']
-)
+with c1:
+    Polyuria = st.selectbox(
+        'Polyuria',
+        ['Yes', 'No']
+    )
 
-Itching = st.selectbox(
-    'Itching',
-    ['Yes', 'No']
-)
+with c2:
+    Polydipsia = st.selectbox(
+        'Polydipsia',
+        ['Yes', 'No']
+    )
 
-Irritability = st.selectbox(
-    'Irritability',
-    ['Yes', 'No']
-)
+with c3:
+    SuddenWeightLoss = st.selectbox(
+        'Sudden Weight Loss',
+        ['Yes', 'No']
+    )
 
-DelayedHealing = st.selectbox(
-    'Delayed Healing',
-    ['Yes', 'No']
-)
+c1, c2, c3 = st.columns(3)
 
-PartialParesis = st.selectbox(
-    'Partial Paresis',
-    ['Yes', 'No']
-)
+with c1:
+    Weakness = st.selectbox(
+        'Weakness',
+        ['Yes', 'No']
+    )
 
-MuscleStiffness = st.selectbox(
-    'Muscle Stiffness',
-    ['Yes', 'No']
-)
+with c2:
+    Polyphagia = st.selectbox(
+        'Polyphagia',
+        ['Yes', 'No']
+    )
 
-Alopecia = st.selectbox(
-    'Alopecia',
-    ['Yes', 'No']
-)
+with c3:
+    GenitalThrush = st.selectbox(
+        'Genital Thrush',
+        ['Yes', 'No']
+    )
 
-Obesity = st.selectbox(
-    'Obesity',
-    ['Yes', 'No']
-)
+c1, c2, c3 = st.columns(3)
 
-# encoding
+with c1:
+    VisualBlurring = st.selectbox(
+        'Visual Blurring',
+        ['Yes', 'No']
+    )
+
+with c2:
+    Itching = st.selectbox(
+        'Itching',
+        ['Yes', 'No']
+    )
+
+with c3:
+    Irritability = st.selectbox(
+        'Irritability',
+        ['Yes', 'No']
+    )
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    DelayedHealing = st.selectbox(
+        'Delayed Healing',
+        ['Yes', 'No']
+    )
+
+with c2:
+    PartialParesis = st.selectbox(
+        'Partial Paresis',
+        ['Yes', 'No']
+    )
+
+with c3:
+    MuscleStiffness = st.selectbox(
+        'Muscle Stiffness',
+        ['Yes', 'No']
+    )
+
+c1, c2 = st.columns(2)
+
+with c1:
+    Alopecia = st.selectbox(
+        'Alopecia',
+        ['Yes', 'No']
+    )
+
+with c2:
+    Obesity = st.selectbox(
+        'Obesity',
+        ['Yes', 'No']
+    )
+
+# ---------------- ENCODING ----------------
+
 Gender = 0 if Gender == 'Male' else 1
 
 def yn(x):
     return 0 if x == 'Yes' else 1
 
-# prediction
-if st.button('Predict Diabetes'):
+# ---------------- PREDICTION ----------------
+
+st.write("")
+
+if st.button('⚡ Predict Diabetes'):
 
     input_data = np.asarray([[
         Age,
@@ -187,86 +285,87 @@ if st.button('Predict Diabetes'):
         yn(Obesity)
     ]])
 
-    # model prediction
-    prediction = loaded_model.predict(input_data)
+    prediction = loaded_model.predict(
+        input_data
+    )
 
-    # probability prediction
-    probability = loaded_model.predict_proba(input_data)
+    probability = loaded_model.predict_proba(
+        input_data
+    )
 
-    diabetic_probability = probability[0][1] * 100
+    diabetic_probability = (
+        probability[0][1] * 100
+    )
 
     # risk level
     if diabetic_probability < 30:
         risk = "Low Risk"
-        risk_color = "#BBF7D0"
-        text_color = "#166534"
 
     elif diabetic_probability < 70:
         risk = "Moderate Risk"
-        risk_color = "#FDE68A"
-        text_color = "#92400E"
 
     else:
         risk = "High Risk"
-        risk_color = "#FECACA"
-        text_color = "#991B1B"
 
-    st.write("")
-
-    # positive result
+    # positive
     if prediction[0] == 'Positive':
 
         st.markdown(
             f"""
-            <div style='
-            background-color:{risk_color};
-            padding:25px;
-            border-radius:15px;
-            text-align:center;
+            <div class='result-box'
+            style='
+            background-color:#fee2e2;
+            color:#991b1b;
             '>
 
-            <h2 style='color:{text_color};'>
-            ⚠️ Diabetic Positive
-            </h2>
+            ⚠️ Diabetic Positive<br><br>
 
-            <h3 style='color:{text_color};'>
-            Risk Level: {risk}
-            </h3>
+            Risk Level: {risk}<br><br>
 
-            <h3 style='color:{text_color};'>
-            Probability: {diabetic_probability:.2f}%
-            </h3>
+            Probability:
+            {diabetic_probability:.2f}%
 
             </div>
             """,
             unsafe_allow_html=True
         )
 
-    # negative result
+    # negative
     else:
 
         st.markdown(
             f"""
-            <div style='
-            background-color:#BBF7D0;
-            padding:25px;
-            border-radius:15px;
-            text-align:center;
+            <div class='result-box'
+            style='
+            background-color:#dcfce7;
+            color:#166534;
             '>
 
-            <h2 style='color:#166534;'>
-            ✅ Not Diabetic
-            </h2>
+            ✅ Not Diabetic<br><br>
 
-            <h3 style='color:#166534;'>
-            Risk Level: {risk}
-            </h3>
+            Risk Level: {risk}<br><br>
 
-            <h3 style='color:#166534;'>
-            Probability: {diabetic_probability:.2f}%
-            </h3>
+            Probability:
+            {diabetic_probability:.2f}%
 
             </div>
             """,
             unsafe_allow_html=True
         )
+
+# ---------------- DISCLAIMER ----------------
+
+st.markdown(
+    """
+    <div class='disclaimer'>
+    ⚠️ Disclaimer:
+    This prediction is based on machine learning
+    and should not replace professional
+    medical advice.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown("</div>",
+            unsafe_allow_html=True)
