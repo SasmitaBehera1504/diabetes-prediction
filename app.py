@@ -2,14 +2,20 @@ import streamlit as st
 import pickle
 import numpy as np
 
-# page settings
+# =========================
+# PAGE SETTINGS
+# =========================
+
 st.set_page_config(
-    page_title="Diabetes Prediction",
+    page_title="Diabetes Prediction System",
     page_icon="🩺",
     layout="centered"
 )
 
-# custom css
+# =========================
+# CUSTOM CSS
+# =========================
+
 st.markdown("""
 <style>
 
@@ -22,7 +28,7 @@ h1 {
     color: #0F172A;
 }
 
-.stButton>button {
+.stButton > button {
     width: 100%;
     background-color: #2563EB;
     color: white;
@@ -33,7 +39,7 @@ h1 {
     border: none;
 }
 
-.stButton>button:hover {
+.stButton > button:hover {
     background-color: #1D4ED8;
     color: white;
 }
@@ -44,33 +50,46 @@ h1 {
     text-align: center;
     font-size: 24px;
     font-weight: bold;
+    margin-top: 20px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# load model
+# =========================
+# LOAD MODEL
+# =========================
+
 loaded_model = pickle.load(open('diabetes_model.sav', 'rb'))
 
-# title
+# =========================
+# TITLE
+# =========================
+
 st.title("🩺 Diabetes Prediction System")
 
 st.markdown(
-    "<h4 style='text-align:center;color:gray;'>"
-    "Machine Learning Based Health Prediction"
-    "</h4>",
+    """
+    <h4 style='text-align:center;color:gray;'>
+    Machine Learning Based Health Prediction
+    </h4>
+    """,
     unsafe_allow_html=True
 )
 
 st.write("")
 
-# patient details
+# =========================
+# PATIENT DETAILS
+# =========================
+
 st.subheader("Patient Details")
 
 Age = st.number_input(
     'Age',
     min_value=1,
-    max_value=120
+    max_value=120,
+    value=25
 )
 
 Gender = st.selectbox(
@@ -79,27 +98,82 @@ Gender = st.selectbox(
 )
 
 Polyuria = st.selectbox('Polyuria', ['Yes', 'No'])
-Polydipsia = st.selectbox('Polydipsia', ['Yes', 'No'])
-SuddenWeightLoss = st.selectbox('Sudden Weight Loss', ['Yes', 'No'])
-Weakness = st.selectbox('Weakness', ['Yes', 'No'])
-Polyphagia = st.selectbox('Polyphagia', ['Yes', 'No'])
-GenitalThrush = st.selectbox('Genital Thrush', ['Yes', 'No'])
-VisualBlurring = st.selectbox('Visual Blurring', ['Yes', 'No'])
-Itching = st.selectbox('Itching', ['Yes', 'No'])
-Irritability = st.selectbox('Irritability', ['Yes', 'No'])
-DelayedHealing = st.selectbox('Delayed Healing', ['Yes', 'No'])
-PartialParesis = st.selectbox('Partial Paresis', ['Yes', 'No'])
-MuscleStiffness = st.selectbox('Muscle Stiffness', ['Yes', 'No'])
-Alopecia = st.selectbox('Alopecia', ['Yes', 'No'])
-Obesity = st.selectbox('Obesity', ['Yes', 'No'])
 
-# CORRECT encoding
+Polydipsia = st.selectbox('Polydipsia', ['Yes', 'No'])
+
+SuddenWeightLoss = st.selectbox(
+    'Sudden Weight Loss',
+    ['Yes', 'No']
+)
+
+Weakness = st.selectbox(
+    'Weakness',
+    ['Yes', 'No']
+)
+
+Polyphagia = st.selectbox(
+    'Polyphagia',
+    ['Yes', 'No']
+)
+
+GenitalThrush = st.selectbox(
+    'Genital Thrush',
+    ['Yes', 'No']
+)
+
+VisualBlurring = st.selectbox(
+    'Visual Blurring',
+    ['Yes', 'No']
+)
+
+Itching = st.selectbox(
+    'Itching',
+    ['Yes', 'No']
+)
+
+Irritability = st.selectbox(
+    'Irritability',
+    ['Yes', 'No']
+)
+
+DelayedHealing = st.selectbox(
+    'Delayed Healing',
+    ['Yes', 'No']
+)
+
+PartialParesis = st.selectbox(
+    'Partial Paresis',
+    ['Yes', 'No']
+)
+
+MuscleStiffness = st.selectbox(
+    'Muscle Stiffness',
+    ['Yes', 'No']
+)
+
+Alopecia = st.selectbox(
+    'Alopecia',
+    ['Yes', 'No']
+)
+
+Obesity = st.selectbox(
+    'Obesity',
+    ['Yes', 'No']
+)
+
+# =========================
+# ENCODING
+# =========================
+
 Gender = 1 if Gender == 'Male' else 0
 
-def yn(x):
-    return 1 if x == 'Yes' else 0
+def yn(value):
+    return 1 if value == 'Yes' else 0
 
-# prediction
+# =========================
+# PREDICTION
+# =========================
+
 if st.button('Predict Diabetes'):
 
     input_data = np.asarray([[
@@ -121,33 +195,38 @@ if st.button('Predict Diabetes'):
         yn(Obesity)
     ]])
 
+    # prediction
     prediction = loaded_model.predict(input_data)
 
-st.write("")
+    # probability (if supported)
+    try:
+        probability = loaded_model.predict_proba(input_data)[0][1]
+        probability_percent = round(probability * 100, 2)
+    except:
+        probability_percent = None
 
-if prediction[0] == 1 or prediction[0] == 'Positive':
+    # =========================
+    # POSITIVE RESULT
+    # =========================
 
-    st.markdown(
-        """
-        <div class='result-box'
-        style='background-color:#FECACA;color:#991B1B;'>
-        ⚠️ Diabetic Positive
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    if prediction[0] == 1 or prediction[0] == 'Positive':
 
-else:
+        st.markdown(
+            """
+            <div class='result-box'
+            style='background-color:#FECACA;color:#991B1B;'>
+            ⚠️ Diabetic Positive
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    st.markdown(
-        """
-        <div class='result-box'
-        style='background-color:#BBF7D0;color:#166534;'>
-        ✅ Not Diabetic
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        if probability_percent is not None:
+            st.write(f"### Diabetes Risk Probability: {probability_percent}%")
+
+    # =========================
+    # NEGATIVE RESULT
+    # =========================
 
     else:
 
@@ -160,3 +239,6 @@ else:
             """,
             unsafe_allow_html=True
         )
+
+        if probability_percent is not None:
+            st.write(f"### Diabetes Risk Probability: {probability_percent}%")
