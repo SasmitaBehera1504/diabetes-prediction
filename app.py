@@ -123,20 +123,31 @@ if st.button('Predict Diabetes'):
 
     prediction = loaded_model.predict(input_data)
 
-    st.write("")
+st.write("")
 
-    # if model returns 1/0
-    if prediction[0] == 1 or prediction[0] == 'Positive':
+if prediction[0] == 1 or prediction[0] == 'Positive':
 
-        st.markdown(
-            """
-            <div class='result-box'
-            style='background-color:#FECACA;color:#991B1B;'>
-            ⚠️ Diabetic Positive
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    st.markdown(
+        """
+        <div class='result-box'
+        style='background-color:#FECACA;color:#991B1B;'>
+        ⚠️ Diabetic Positive
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+else:
+
+    st.markdown(
+        """
+        <div class='result-box'
+        style='background-color:#BBF7D0;color:#166534;'>
+        ✅ Not Diabetic
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     else:
 
